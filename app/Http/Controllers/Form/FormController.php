@@ -34,6 +34,7 @@ class FormController extends Controller
         foreach ($formData as $questionType => $data) {
             // Initialize the questionText
             $questionText = [];
+            $options = [];
 
             // Loop through the $data array to find the key associated with the question text
             foreach ($data as $key => $value) {
@@ -41,6 +42,11 @@ class FormController extends Controller
                     $questionText = $value;
                     break;
                 }
+            }
+            // Extract the portion of the string until the last underscore
+            $lastUnderscorePosition = strrpos($questionType, '_');
+            if ($lastUnderscorePosition !== false) {
+                $questionType = substr($questionType, 0, $lastUnderscorePosition);
             }
 
             $options = isset($data['options']) ? json_encode($data['options']) : null;
@@ -57,5 +63,13 @@ class FormController extends Controller
                 'options' => $options, // Options (if they exist)
             ]);
         }
+
+        return redirect()->route('preview.form', ["code" => $uniqueId]);
+    }
+
+    public function preview($uniqueId) {
+        $datas = Form::whereUnique_id($uniqueId)->get();
+
+        return view('pages.forms.dynamic-form', ['datas' => $datas]);
     }
 }

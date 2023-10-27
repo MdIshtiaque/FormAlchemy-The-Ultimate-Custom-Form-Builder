@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('create-form', [FormController::class, 'createForm'])->name('create.form');
     Route::post('create-form/store', [FormController::class, 'storeForm'])->name('form.store');
+    Route::get('form/{code}', [FormController::class, 'preview'])->name('preview.form');
 });
 
 require __DIR__.'/auth.php';

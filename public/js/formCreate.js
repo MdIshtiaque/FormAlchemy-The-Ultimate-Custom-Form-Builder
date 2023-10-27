@@ -100,7 +100,7 @@ const addOptionInputs = (count, parentDiv, parentId, type) => {
         input.type = 'text';
         input.placeholder = `Option ${i}`;
         input.className = 'form-control mb-2';
-        input.name = `${type}[options][${i - 1}]`;
+        input.name = `${type}_${uniqueId}[options][${i - 1}]`;
         optionDiv.appendChild(input);
     }
     parentDiv.appendChild(optionDiv);
@@ -118,7 +118,7 @@ const addTextConfig = (parentDiv, type) => {
     if (pretypes.includes(type)) {
         placeholderInput.name = `${type}_${uniqueId}[${type}]`;
     }else {
-        placeholderInput.name = `${type}[${type}]`;
+        placeholderInput.name = `${type}_${uniqueId}[${type}]`;
     }
     placeholderInput.dataset.type = 'Short Answer'; // Add type information
     parentDiv.appendChild(placeholderInput);
