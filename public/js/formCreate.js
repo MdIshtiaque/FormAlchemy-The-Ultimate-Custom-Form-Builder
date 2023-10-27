@@ -75,6 +75,7 @@ const addOptionConfig = (parentDiv, type) => {
     numOptionsInput.className = 'form-control mb-4';
     // numOptionsInput.name = `${type}[${uniqueId}][numOptions]`;
     numOptionsInput.dataset.type = 'Multiple Choice'; // Add type information
+    numOptionsInput.required = true;
     numOptionsInput.oninput = (e) => {
         // Check and remove existing optionDiv if it exists
         const existingOptionDiv = parentDiv.querySelector('.optionDiv');
@@ -101,6 +102,7 @@ const addOptionInputs = (count, parentDiv, parentId, type) => {
         input.placeholder = `Option ${i}`;
         input.className = 'form-control mb-2';
         input.name = `${type}_${uniqueId}[options][${i - 1}]`;
+        input.required = true;
         optionDiv.appendChild(input);
     }
     parentDiv.appendChild(optionDiv);
@@ -121,6 +123,7 @@ const addTextConfig = (parentDiv, type) => {
         placeholderInput.name = `${type}_${uniqueId}[${type}]`;
     }
     placeholderInput.dataset.type = 'Short Answer'; // Add type information
+    placeholderInput.required = true;
     parentDiv.appendChild(placeholderInput);
 };
 
