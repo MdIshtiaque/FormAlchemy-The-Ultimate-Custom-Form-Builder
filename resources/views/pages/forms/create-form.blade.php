@@ -9,10 +9,6 @@
             background-color: #f3f4f6;
         }
 
-        .container {
-            margin-top: 2rem;
-        }
-
         .form-wizardry-card {
             margin-bottom: 50px;
             padding: 2rem;
@@ -62,6 +58,7 @@
         <div class="form-wizardry-card">
             <form action="{{ route('form.store') }}" method="POST">
                 @csrf
+                <input type="text" name="topicId" value="{{ $topicId }}" hidden>
                 <div id="configDiv">
                 </div>
                 <div id="selectorDiv" class="mt-4">
