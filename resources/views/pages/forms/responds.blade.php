@@ -37,8 +37,21 @@
 
         td {
             word-wrap: break-word;
-            max-width: 150px;
-            /* or whatever maximum width you want to set */
+            overflow-wrap: break-word;
+            max-width: 100%;
+        }
+
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 90%;
+            }
+        }
+        @media only screen and (max-width: 768px) {
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
         }
     </style>
 @endpush
@@ -46,7 +59,7 @@
 @section('content')
     <div class="container mt-5">
         <h1>Responds</h1>
-
+        <div class="table-responsive">
         <table id="dataTable" class="table table-striped table-bordered">
             <thead>
             <tr>
@@ -72,6 +85,7 @@
             @endforeach
             </tbody>
         </table>
+        </div>
     </div>
 @endsection
 
@@ -82,9 +96,10 @@
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
     <script>
-        $(document).ready(function () {
-            // Initialize DataTable
-            $('#dataTable').DataTable();
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                responsive: true
+            });
         });
     </script>
 @endpush

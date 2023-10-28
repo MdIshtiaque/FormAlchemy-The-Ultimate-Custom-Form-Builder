@@ -37,8 +37,22 @@
 
         td {
             word-wrap: break-word;
-            max-width: 150px;
-            /* or whatever maximum width you want to set */
+            overflow-wrap: break-word;
+            max-width: 100%;
+        }
+
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 90%;
+            }
+        }
+
+        @media only screen and (max-width: 768px) {
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
         }
     </style>
 @endpush
@@ -46,10 +60,8 @@
 @section('content')
     <div class="container mt-5">
         <h1>Dashboard</h1>
-
-        <!-- Statistics -->
         <div class="row mt-4">
-            <div class="col-md-12">
+            <div class="col-md-12 col-12">
                 <div class="card stat-card">
                     <div class="card-body">
                         <div class="stat-title">Total Form</div>
@@ -57,67 +69,56 @@
                     </div>
                 </div>
             </div>
-{{--            <div class="col-md-6">--}}
-{{--                <div class="card stat-card">--}}
-{{--                    <div class="card-body">--}}
-{{--                        <div class="stat-title">Total Clicks</div>--}}
-{{--                        <div class="stat-number" id="clickCount">0</div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
         </div>
-
-        <!-- Data Table -->
         <div class="d-flex justify-content-end align-items-center mb-3">
             <button type="button" class="btn btn-success mt-5" data-toggle="modal" data-target="#exampleModalCenter">
                 Create New Form
             </button>
         </div>
-
-
-        <table id="dataTable" class="table table-striped table-bordered">
-            <thead>
-            <tr>
-                <th>Title</th>
-                <th>Shareable Link</th>
-                <th>Action</th>
-            </tr>
-
-            </thead>
-            <tbody id="tableBody">
-            <!-- Data will go here -->
-            @foreach ($items as $index => $item)
+        <div class="table-responsive">
+            <table id="dataTable" class="table table-striped table-bordered">
+                <thead>
                 <tr>
-                    <td>{{ $item->first()->topic->title }}</td>
-                    <td>
-                        <button type="button" class="btn btn-link copy-link" id="copyBtn" data-clipboard-text="{{ env('APP_URL') }}/form/{{ $item->first()->unique_id }}"  data-toggle="tooltip" data-placement="top" title="Copied!">
-                            <i class="fas fa-share-alt"></i>
-                        </button>
-                    </td>
-                    <td>
-                        <a type="button" href="{{ route('responds', ['uniqueId' => $item->first()->unique_id]) }}" class="btn btn-primary edit-link btn-edit-link">
-                            View Responds
-                        </a>
-                    </td>
+                    <th>Title</th>
+                    <th>Shareable Link</th>
+                    <th>Action</th>
                 </tr>
-            @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="tableBody">
+                @foreach ($items as $index => $item)
+                    <tr>
+                        <td>{{ $item->first()->topic->title }}</td>
+                        <td>
+                            <button type="button" class="btn btn-link copy-link" id="copyBtn" data-clipboard-text="{{ env('APP_URL') }}/form/{{ $item->first()->unique_id }}" data-toggle="tooltip" data-placement="top" title="Copied!">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <a type="button" href="{{ route('responds', ['uniqueId' => $item->first()->unique_id]) }}" class="btn btn-primary edit-link btn-edit-link">
+                                View Responds
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
         @include('pages.forms.modal.form-name')
     </div>
 @endsection
 
 @push('js')
-
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Initialize DataTable
-            $('#dataTable').DataTable();
+            $('#dataTable').DataTable({
+                responsive: true
+            });
         });
+
     </script>
     <script>
         $(document).ready(function(){
@@ -132,8 +133,6 @@
                 }, 1000);
             });
         });
-
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
-
 @endpush
