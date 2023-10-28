@@ -3,6 +3,7 @@
 use App\Http\Controllers\Form\FormController;
 use App\Http\Controllers\Form\RespondController;
 use App\Http\Controllers\ProfileController;
+use App\Models\FormData;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,7 +43,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/respond-update', [RespondController::class, 'respondUpdate'])->name('respond.update');
 
     Route::get('/submitted-form', [RespondController::class, 'submittedForm'])->name('submitted.form');
+    Route::get('responds/statistic/{uniqueId}', [RespondController::class, 'chart'])->name('show.chart');
 
 });
 
-require __DIR__.'/auth.php';
+
+require __DIR__ . '/auth.php';

@@ -97,6 +97,9 @@
                             <a type="button" href="{{ route('responds', ['uniqueId' => $item->first()->unique_id]) }}" class="btn btn-primary edit-link btn-edit-link">
                                 View Responds
                             </a>
+                            <a type="button" href="{{ route('show.chart', ['uniqueId' => $item->first()->unique_id]) }}" class="btn btn-primary edit-link btn-edit-link">
+                                Statistics
+                            </a>
                         </td>
                     </tr>
                 @endforeach

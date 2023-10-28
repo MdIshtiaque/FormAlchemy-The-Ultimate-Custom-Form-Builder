@@ -59,4 +59,43 @@ class RespondController extends Controller
 
         return view('pages.forms.submitted', ['items' => $items]);
     }
+
+    public function chart($uniqueId)
+    {
+        $responds = FormData::with('form', 'user')->where('unique_id', $uniqueId)->get()->groupBy('form_id');
+        $output = [];
+
+        foreach ($responds as $formId => $formDataCollection) {
+            $question = $formDataCollection->first()->form->question;
+            $answers = $formDataCollection->pluck('value')->toArray();
+            $countedAnswers = [];
+
+            foreach ($answers as $answer) {
+                $decodedAnswer = json_decode($answer, true);
+
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decodedAnswer)) {
+                    foreach ($decodedAnswer as $item) {
+                        $item = (string)$item; // Convert to string if it's not
+                        if (!isset($countedAnswers[$item])) {
+                            $countedAnswers[$item] = 0;
+                        }
+                        $countedAnswers[$item]++;
+                    }
+                } else {
+                    if (!isset($countedAnswers[$answer])) {
+                        $countedAnswers[$answer] = 0;
+                    }
+                    $countedAnswers[$answer]++;
+                }
+            }
+
+            $output[] = [
+                'question' => $question,
+                'answers' => $countedAnswers
+            ];
+        }
+
+//        return response()->json($output);
+        return view('pages.forms.chart-view', ['output' => json_encode($output)]);
+    }
 }
