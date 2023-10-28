@@ -65,7 +65,7 @@
 @section('content')
 
     <div class="container">
-        <h1>FormAlchemy</h1>
+        <h1>{{ $datas->first()->topic->title  }}</h1>
         @if($isFilled === null)
             <form action="{{ route('formData.store') }}" method="post">
                 @csrf

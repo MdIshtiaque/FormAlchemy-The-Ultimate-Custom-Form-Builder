@@ -58,7 +58,7 @@
 @section('content')
 
     <div class="container mt-5">
-        <h1 class="text-center text-primary">FormAlchemy</h1>
+        <h1 class="text-center text-primary">{{ $items->first()->topic->title }}</h1>
         <div class="form-wizardry-card">
             <div id="selectorDiv" class="mt-4">
                 <form id="respond" action="{{ route('respond.update') }}" method="POST">

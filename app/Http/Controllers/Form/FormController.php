@@ -97,7 +97,7 @@ class FormController extends Controller
 
     public function preview($uniqueId)
     {
-        $datas = Form::whereUnique_id($uniqueId)->get();
+        $datas = Form::with('topic')->whereUnique_id($uniqueId)->get();
         $isFilled = FormData::whereUnique_id($uniqueId)->whereUser_id(auth()->user()->id)->first();
         if($isFilled) {
             $items = Form::whereUnique_id($uniqueId)

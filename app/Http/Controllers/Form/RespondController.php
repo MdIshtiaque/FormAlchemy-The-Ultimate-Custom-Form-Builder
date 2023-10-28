@@ -24,7 +24,7 @@ class RespondController extends Controller
         $items = Form::whereUnique_id($uniqueId)
             ->with(['formData' => function ($query) use ($request) {
                 $query->where('user_id', $request->submittedBy);
-            }])
+            }, 'topic'])
             ->get();
 //        return  $items;
         return view('pages.forms.submitted-form', ['items' => $items]);

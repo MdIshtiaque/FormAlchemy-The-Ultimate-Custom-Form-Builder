@@ -48,12 +48,12 @@ const renderConfig = () => {
     sectionDiv.appendChild(header);
 
     if (['Multiple Choice', 'Checkbox', 'Dropdown'].includes(type)) {
-        addTextConfig(sectionDiv, type);
+        addTextConfig(sectionDiv, type).focus();
         addOptionConfig(sectionDiv, type);
     } else if (['Short Answer', 'Long Answer'].includes(type)) {
-        addTextConfig(sectionDiv, type);
+        addTextConfig(sectionDiv, type).focus();
     } else if (['Time', 'Date'].includes(type)) {
-        addTextConfig(sectionDiv, type);
+        addTextConfig(sectionDiv, type).focus();
         addTimeDateConfig(sectionDiv, type);
     }
 
@@ -86,6 +86,9 @@ const addOptionConfig = (parentDiv, type) => {
         addOptionInputs(e.target.value, parentDiv, uniqueId, type);
     };
     parentDiv.appendChild(numOptionsInput);
+    setTimeout(() => {
+        placeholderInput.focus();
+    }, 300);
 };
 
 
@@ -106,6 +109,7 @@ const addOptionInputs = (count, parentDiv, parentId, type) => {
         optionDiv.appendChild(input);
     }
     parentDiv.appendChild(optionDiv);
+
 };
 
 
@@ -125,6 +129,11 @@ const addTextConfig = (parentDiv, type) => {
     placeholderInput.dataset.type = 'Short Answer'; // Add type information
     placeholderInput.required = true;
     parentDiv.appendChild(placeholderInput);
+    setTimeout(() => {
+        placeholderInput.focus();
+    }, 300);
+
+    return placeholderInput;
 };
 
 
