@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Link Shortener</title>
+    <title>FormAlchemy</title>
     <!-- Bootstrap CSS -->
     @include('partial.style')
     @stack('css')
