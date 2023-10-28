@@ -60,7 +60,7 @@ class RespondController extends Controller
         return view('pages.forms.submitted', ['items' => $items]);
     }
 
-    public function chart($uniqueId)
+    public function chart($uniqueId): View
     {
         $responds = FormData::with('form', 'user')->where('unique_id', $uniqueId)->get()->groupBy('form_id');
         $output = [];
@@ -95,7 +95,6 @@ class RespondController extends Controller
             ];
         }
 
-//        return response()->json($output);
         return view('pages.forms.chart-view', ['output' => json_encode($output)]);
     }
 }
