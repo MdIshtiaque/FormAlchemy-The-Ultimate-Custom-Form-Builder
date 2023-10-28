@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -39,6 +39,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('responds/{uniqueId}', [RespondController::class, 'responds'])->name('responds');
     Route::get('respond/preview/{uniqueId}', [RespondController::class, 'previewRespond'])->name('preview.respond');
+    Route::post('/respond-update', [RespondController::class, 'respondUpdate'])->name('respond.update');
+
+    Route::get('/submitted-form', [RespondController::class, 'submittedForm'])->name('submitted.form');
 
 });
 

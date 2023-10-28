@@ -29,4 +29,30 @@ class RespondController extends Controller
 //        return  $items;
         return view('pages.forms.submitted-form', ['items' => $items]);
     }
+
+    public function respondUpdate(Request $request) {
+        try {
+            $formIds = FormData::whereUnique_id($request->uniqueId)->whereUser_id(auth()->user()->id)->get();
+
+            foreach ($formIds as $item) {
+                $valueToSave = $request->value[$item->form_id];
+                if (is_array($valueToSave)) {
+                    $valueToSave = json_encode($valueToSave);
+                }
+                $item->update([
+                    'value' => $valueToSave
+                ]);
+            }
+        }catch (\Exception $exception) {
+
+        }
+
+        return back();
+    }
+
+    public function submittedForm() {
+        $items = FormData::with('form.topic')->whereUser_id(auth()->user()->id)->get()->groupby('unique_id');
+//        return $items;
+        return view('pages.forms.submitted', ['items' => $items]);
+    }
 }

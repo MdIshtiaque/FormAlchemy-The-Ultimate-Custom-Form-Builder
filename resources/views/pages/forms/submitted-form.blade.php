@@ -59,19 +59,24 @@
 
     <div class="container mt-5">
         <h1 class="text-center text-primary">FormAlchemy</h1>
-            <div class="form-wizardry-card">
-                <div id="selectorDiv" class="mt-4">
+        <div class="form-wizardry-card">
+            <div id="selectorDiv" class="mt-4">
+                <form id="respond" action="{{ route('respond.update') }}" method="POST">
+                    @csrf
                     <input name="uniqueId" value="{{ $items->first()->unique_id }}" hidden>
                     @foreach($items as $key => $item)
                         @if($item->type === 'Short_Answer')
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">{{ $item->question }}</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" disabled value="{{ optional($item->formData[0])->value }}" placeholder="name@example.com">
+                                <input type="text" class="form-control" id="exampleFormControlInput1" disabled
+                                       value="{{ optional($item->formData[0])->value }}" placeholder="name@example.com" name="value[{{ $item->id }}]" required>
                             </div>
                         @elseif($item->type === 'Long_Answer')
                             <div class="mb-3">
-                                <label for="exampleFormControlTextarea1" class="form-label">{{ $item->question }}</label>
-                                <textarea class="form-control" disabled id="exampleFormControlTextarea1">{{ optional($item->formData[0])->value }}</textarea>
+                                <label for="exampleFormControlTextarea1"
+                                       class="form-label">{{ $item->question }}</label>
+                                <textarea class="form-control" disabled name="value[{{ $item->id }}]"
+                                          id="exampleFormControlTextarea1" required>{{ optional($item->formData[0])->value }}</textarea>
                             </div>
                         @elseif($item->type === 'Checkbox')
                             <div class="mb-3">
@@ -82,8 +87,11 @@
                                 @endphp
                                 @foreach ($options as $option)
                                     <div class="form-check">
-                                        <input class="form-check-input" disabled type="{{ $item->type === 'Checkbox' ? 'checkbox' : 'radio' }}" name="value[{{ $item->id }}]"
-                                               id="{{ $option }}" value="{{ $option }}" {{ $value === $option ? 'checked' : '' }}>
+                                        <input class="form-check-input" disabled
+                                               type="radio"
+                                               name="value[{{ $item->id }}]"
+                                               id="{{ $option }}"
+                                               value="{{ $option }}" {{ $value === $option ? 'checked' : '' }} required>
                                         <label class="form-check-label" for="{{ $option }}">
                                             {{ $option }}
                                         </label>
@@ -100,48 +108,80 @@
                                 @endphp
                                 @foreach ($options as $option)
                                     <div class="form-check">
-                                        <input class="form-check-input" disabled type="checkbox" name="value[{{ $item->id }}][]"
-                                               id="{{ $option }}" value="{{ $option }}" {{ in_array($option, $valueArray) ? 'checked' : '' }} readonly>
+                                        <input class="form-check-input" disabled type="checkbox"
+                                               name="value[{{ $item->id }}][]"
+                                               id="{{ $option }}" value="{{ $option }}"
+                                               {{ in_array($option, $valueArray) ? 'checked' : '' }} readonly required>
                                         <label class="form-check-label" for="{{ $option }}">
                                             {{ $option }}
                                         </label>
                                     </div>
                                 @endforeach
                             </div>
-                    @elseif($item->type === 'Dropdown')
+                        @elseif($item->type === 'Dropdown')
                             <div class="mb-3">
                                 <label class="form-label">{{ $item->question }}</label>
                                 @php
                                     $options = json_decode($item->options, true);
                                     $value = optional($item->formData[0])->value;
                                 @endphp
-                                <select class="form-select" id="{{ $item->question }}" name="value[{{ $item->id }}]" disabled>
+                                <select class="form-select" id="{{ $item->question }}" name="value[{{ $item->id }}]"
+                                        disabled required>
                                     <option value="" disabled {{ empty($value) ? 'selected' : '' }}>Select</option>
                                     @foreach ($options as $option)
-                                        <option value="{{ $option }}" {{ $value === $option ? 'selected' : '' }}>{{ $option }}</option>
+                                        <option
+                                            value="{{ $option }}" {{ $value === $option ? 'selected' : '' }}>{{ $option }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         @elseif($item->type === 'Time')
                             <div class="mb-3">
                                 <label for="{{ $item->id }}" class="form-label">{{ $item->question }}</label>
-                                <input type="time" disabled class="form-control" id="{{ $item->id }}" name="value[{{ $item->id }}]"
-                                       value="{{ optional($item->formData[0])->value }}">
+                                <input type="time" disabled class="form-control" id="{{ $item->id }}"
+                                       name="value[{{ $item->id }}]"
+                                       value="{{ optional($item->formData[0])->value }}" required>
                             </div>
                         @elseif($item->type === 'Date')
                             <div class="mb-3">
                                 <label for="{{ $item->id }}" class="form-label">{{ $item->question }}</label>
-                                <input type="date" disabled class="form-control" id="{{ $item->id }}" name="value[{{ $item->id }}]"
-                                       value="{{ optional($item->formData[0])->value }}">
+                                <input type="date" disabled class="form-control" id="{{ $item->id }}"
+                                       name="value[{{ $item->id }}]"
+                                       value="{{ optional($item->formData[0])->value }}" required>
                             </div>
                         @endif
                     @endforeach
-
-                </div>
+                    <button id="submitButton" class="btn btn-primary" type="submit" style="display:none;">Submit</button>
+                </form>
+                    <button id="editButton" class="btn btn-warning">Edit Respond</button>
             </div>
+        </div>
 
-@endsection
+        @endsection
 
-@push('js')
+        @push('js')
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const editButton = document.getElementById('editButton');
+                    const submitButton = document.getElementById('submitButton');
+                    const formControls = document.querySelectorAll('.form-control, .form-check-input, .form-select');
 
-@endpush
+                    editButton.addEventListener('click', function () {
+                        formControls.forEach(function (element) {
+                            element.removeAttribute('disabled');
+                        });
+                        document.getElementById('editButton').style.display = 'none'
+                        submitButton.style.display = 'block';
+                    });
+                    const formId = document.getElementById('respond');
+
+                    submitButton.addEventListener('click', function() {
+                        if (formId.checkValidity()) {
+                            formId.submit();
+                        } else {
+                            alert('Please fill out all required fields.');
+                        }
+                    });
+                });
+            </script>
+    @endpush
+

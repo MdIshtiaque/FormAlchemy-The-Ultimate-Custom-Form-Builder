@@ -49,22 +49,22 @@
 
         <!-- Statistics -->
         <div class="row mt-4">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card stat-card">
                     <div class="card-body">
-                        <div class="stat-title">Shortened Links</div>
-                        <div class="stat-number" id="shortenedCount">0</div>
+                        <div class="stat-title">Total Form</div>
+                        <div class="stat-number" id="shortenedCount">{{ $items->count() }}</div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card stat-card">
-                    <div class="card-body">
-                        <div class="stat-title">Total Clicks</div>
-                        <div class="stat-number" id="clickCount">0</div>
-                    </div>
-                </div>
-            </div>
+{{--            <div class="col-md-6">--}}
+{{--                <div class="card stat-card">--}}
+{{--                    <div class="card-body">--}}
+{{--                        <div class="stat-title">Total Clicks</div>--}}
+{{--                        <div class="stat-number" id="clickCount">0</div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
         </div>
 
         <!-- Data Table -->

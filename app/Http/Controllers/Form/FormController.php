@@ -15,7 +15,6 @@ class FormController extends Controller
     {
         $items = Form::with('topic')->whereCreated_by(auth()->user()->id)->get()->groupby('unique_id');
 
-//        return $items;
         return view('pages.forms.index', ['items' => $items]);
     }
 
@@ -100,6 +99,14 @@ class FormController extends Controller
     {
         $datas = Form::whereUnique_id($uniqueId)->get();
         $isFilled = FormData::whereUnique_id($uniqueId)->whereUser_id(auth()->user()->id)->first();
+        if($isFilled) {
+            $items = Form::whereUnique_id($uniqueId)
+                ->with(['formData' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                }])
+                ->get();
+            return view('pages.forms.submitted-form', ['items' => $items]);
+        }
         return view('pages.forms.dynamic-form', ['datas' => $datas, 'isFilled' => $isFilled]);
     }
 
