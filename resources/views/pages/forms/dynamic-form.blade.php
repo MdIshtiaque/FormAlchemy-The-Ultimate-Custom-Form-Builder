@@ -110,7 +110,10 @@
                                 @if (is_array($options))
                                     @foreach ($options as $option)
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox"  value="{{ $option }}" id="{{ $option }}" name="value[{{ $item->id }}][]" required>
+                                            <input class="form-check-input" type="checkbox"  value="{{ $option }}" id="{{ $option }}"  data-toggle="tooltip"
+                                                   data-placement="right"
+                                                   title="This checkbox is required."  name="value[{{ $item->id }}][]">
+
                                             <label class="form-check-label" for="{{ $option }}">
                                                 {{ $option }}
                                             </label>
@@ -168,4 +171,22 @@
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+    <script>
+        $("form").on("submit", function(e) {
+            let isChecked = $("input[type='checkbox']:checked").length > 0;
+
+            if (!isChecked) {
+                e.preventDefault();
+                $('input[type="checkbox"]').tooltip('show');
+                setTimeout(() => { $('input[type="checkbox"]').tooltip('hide'); }, 3000);
+            }
+        });
+
+        // Initialize tooltip
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+
+
+    </script>
 @endpush
