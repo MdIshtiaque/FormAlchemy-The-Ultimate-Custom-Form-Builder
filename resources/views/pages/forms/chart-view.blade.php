@@ -6,7 +6,7 @@
             margin-top: 3rem;
         }
         .chart-container {
-            width: 30%;
+            width: 100%;
             margin: 1rem;
             position: relative;
         }
@@ -31,6 +31,11 @@
             margin-top: 4rem;
             font-weight: bold;
         }
+        @media(min-width: 768px) {
+            .chart-container {
+                width: 30%;
+            }
+        }
     </style>
 @endpush
 
@@ -49,7 +54,7 @@
         if (rawData.length === 0) {
             let messageDiv = document.createElement('div');
             messageDiv.className = 'no-data-message';
-            messageDiv.innerHTML = '<h3>No data available. The form awaits filling by the first individual.</h3>';
+            messageDiv.innerHTML = '<h3>No data available. Awaiting first submission.</h3>';
             container.appendChild(messageDiv);
         } else {
             rawData.forEach((data) => {
@@ -77,6 +82,7 @@
                 let ctx = canvas.getContext('2d');
                 let questions = Object.keys(data.answers);
                 let values = Object.values(data.answers);
+
                 let backgroundColors = [
                     'rgba(15,206,15,0.2)', 'rgba(0, 0, 255, 0.2)',
                     'rgba(255,0,0,0.2)', 'rgba(54, 162, 235, 0.2)',
@@ -85,6 +91,7 @@
                     'rgba(128, 0, 128, 0.2)', 'rgba(255, 165, 0, 0.2)',
                     'rgba(255, 99, 132, 0.2)', 'rgba(255, 192, 203, 0.2)'
                 ];
+
                 new Chart(ctx, {
                     type: 'pie',
                     data: {
@@ -94,6 +101,10 @@
                             data: values,
                             backgroundColor: backgroundColors
                         }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
                     }
                 });
             });
