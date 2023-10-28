@@ -7,18 +7,21 @@ use App\Models\Form;
 use App\Models\FormData;
 use App\Models\Topic;
 use Exception;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use function Laravel\Prompts\alert;
 
 class FormController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $items = Form::with('topic')->whereCreated_by(auth()->user()->id)->get()->groupby('unique_id');
 
         return view('pages.forms.index', ['items' => $items]);
     }
 
-    public function topicStore(Request $request)
+    public function topicStore(Request $request): RedirectResponse
     {
         try {
             $topic = Topic::create([
@@ -26,18 +29,18 @@ class FormController extends Controller
                 'user_id' => auth()->user()->id
             ]);
         } catch (Exception $exception) {
-
+            alert('Something went wrong');
         }
 
         return redirect()->route('create.form', ['topicId' => $topic->id]);
     }
 
-    public function createForm(Request $request, $topicId)
+    public function createForm(Request $request, $topicId): View
     {
         return view('pages.forms.create-form', ['topicId' => $topicId]);
     }
 
-    public function generateUniqueId()
+    public function generateUniqueId(): string
     {
         $uniqueId = str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT); // Generate a 5-digit unique ID
         $exists = Form::where('unique_id', $uniqueId)->exists(); // Check if the ID exists in the database
@@ -50,7 +53,7 @@ class FormController extends Controller
         return $uniqueId;
     }
 
-    public function storeForm(Request $request)
+    public function storeForm(Request $request): RedirectResponse
     {
 
         $formData = $request->except('_token', 'topicId');
@@ -58,7 +61,7 @@ class FormController extends Controller
         $uniqueId = $this->generateUniqueId();
 
         foreach ($formData as $questionType => $data) {
-            // Initialize the questionText
+
             $questionText = [];
             $options = [];
 
@@ -95,7 +98,7 @@ class FormController extends Controller
         return redirect()->route('preview.form', ["code" => $uniqueId]);
     }
 
-    public function preview($uniqueId)
+    public function preview($uniqueId): View
     {
         $datas = Form::with('topic')->whereUnique_id($uniqueId)->get();
         $isFilled = FormData::whereUnique_id($uniqueId)->whereUser_id(auth()->user()->id)->first();
@@ -110,23 +113,28 @@ class FormController extends Controller
         return view('pages.forms.dynamic-form', ['datas' => $datas, 'isFilled' => $isFilled]);
     }
 
-    public function formDataSave(Request $request)
+    public function formDataSave(Request $request): RedirectResponse
     {
 
         $formIds = Form::whereUnique_id($request->uniqueId)->get();
-//        dd($formIds, $request->all());
-        foreach ($formIds as $item) {
-            $valueToSave = $request->value[$item->id];
-            if (is_array($valueToSave)) {
-                $valueToSave = json_encode($valueToSave);
+
+        try {
+            foreach ($formIds as $item) {
+                $valueToSave = $request->value[$item->id];
+                if (is_array($valueToSave)) {
+                    $valueToSave = json_encode($valueToSave);
+                }
+                FormData::create([
+                    'form_id' => $item->id,
+                    'user_id' => auth()->user()->id,
+                    'unique_id' => $request->uniqueId,
+                    'value' => $valueToSave
+                ]);
             }
-            FormData::create([
-                'form_id' => $item->id,
-                'user_id' => auth()->user()->id,
-                'unique_id' => $request->uniqueId,
-                'value' => $valueToSave
-            ]);
+        }catch (Exception $exception) {
+            alert('Something went wrong');
         }
+
 
         return redirect()->route('preview.respond', ['uniqueId' => $request->uniqueId, 'submittedBy' => auth()->user()->id]);
 
