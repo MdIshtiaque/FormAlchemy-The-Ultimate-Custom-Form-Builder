@@ -172,21 +172,22 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
     <script>
-        $("form").on("submit", function(e) {
-            let isChecked = $("input[type='checkbox']:checked").length > 0;
-
-            if (!isChecked) {
-                e.preventDefault();
-                $('input[type="checkbox"]').tooltip('show');
-                setTimeout(() => { $('input[type="checkbox"]').tooltip('hide'); }, 3000);
+        $(document).ready(function () {
+            // Initialize tooltip if checkboxes are present
+            if ($("input[type='checkbox']").length > 0) {
+                $('[data-toggle="tooltip"]').tooltip();
             }
+
+            $("form").on("submit", function(e) {
+                let checkboxesExist = $("input[type='checkbox']").length > 0;
+                let isChecked = $("input[type='checkbox']:checked").length > 0;
+
+                if (checkboxesExist && !isChecked) {
+                    e.preventDefault();
+                    $('input[type="checkbox"]').tooltip('show');
+                    setTimeout(() => { $('input[type="checkbox"]').tooltip('hide'); }, 3000);
+                }
+            });
         });
-
-        // Initialize tooltip
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip();
-        })
-
-
     </script>
 @endpush
