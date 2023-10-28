@@ -47,6 +47,8 @@
 
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2/dist/chartjs-plugin-datalabels.min.js"></script>
+
     <script>
         let rawData = {!! $output !!};
         let container = document.getElementById('charts');
@@ -102,9 +104,28 @@
                             backgroundColor: backgroundColors
                         }]
                     },
+                    plugins: [ChartDataLabels], // Add this line
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false
+                        maintainAspectRatio: false,
+                        plugins: {
+                            datalabels: {
+                                color: '#fff',
+                                formatter: function (value, ctx) {
+                                    let sum = 0;
+                                    let dataArr = ctx.chart.data.datasets[0].data;
+                                    dataArr.map(data => {
+                                        sum += data;
+                                    });
+                                    let percentage = (value * 100 / sum).toFixed(2) + "%";
+                                    return percentage;
+                                },
+                                font: {
+                                    weight: 'bold',
+                                    size: 16,
+                                }
+                            }
+                        }
                     }
                 });
             });
