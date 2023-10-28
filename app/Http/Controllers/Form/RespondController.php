@@ -8,29 +8,32 @@ use App\Models\FormData;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class RespondController extends Controller
 {
-    public function responds($uniqueId): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
+    public function responds($uniqueId): View
     {
         $responds = FormData::with('form', 'user')->whereUnique_id($uniqueId)->get()->groupby('user_id');
 
         return view('pages.forms.responds', ['responds' => $responds]);
     }
 
-    public function previewRespond($uniqueId, Request $request) {
+    public function previewRespond($uniqueId, Request $request): View
+    {
 
         $items = Form::whereUnique_id($uniqueId)
             ->with(['formData' => function ($query) use ($request) {
                 $query->where('user_id', $request->submittedBy);
             }, 'topic'])
             ->get();
-//        return  $items;
+
         return view('pages.forms.submitted-form', ['items' => $items]);
     }
 
-    public function respondUpdate(Request $request) {
+    public function respondUpdate(Request $request): RedirectResponse
+    {
         try {
             $formIds = FormData::whereUnique_id($request->uniqueId)->whereUser_id(auth()->user()->id)->get();
 
@@ -50,9 +53,10 @@ class RespondController extends Controller
         return back();
     }
 
-    public function submittedForm() {
+    public function submittedForm(): View
+    {
         $items = FormData::with('form.topic')->whereUser_id(auth()->user()->id)->get()->groupby('unique_id');
-//        return $items;
+
         return view('pages.forms.submitted', ['items' => $items]);
     }
 }
