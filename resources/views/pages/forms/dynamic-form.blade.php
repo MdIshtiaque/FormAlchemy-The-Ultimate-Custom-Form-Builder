@@ -14,6 +14,7 @@
         }
 
         .form-wizardry-card {
+            position: relative;
             margin-bottom: 50px;
             padding: 2rem;
             border-radius: 12px;
@@ -51,6 +52,13 @@
         .form-check-label {
             margin-left: 0.5rem;
         }
+
+        .copy-link {
+            position: absolute;  /* Absolute positioning relative to the parent */
+            top: 10px;          /* Adjust as needed for precise positioning */
+            right: 10px;        /* Adjust as needed */
+            z-index: 10;        /* Ensure it appears above other elements */
+        }
     </style>
 @endpush
 
@@ -62,6 +70,9 @@
             <form action="{{ route('formData.store') }}" method="post">
                 @csrf
                 <div class="form-wizardry-card">
+                    <button type="button" class="btn btn-link copy-link" id="copyBtn" data-clipboard-text="{{ env('APP_URL') }}/form/{{ $datas->first()->unique_id }}" data-toggle="tooltip" data-placement="top" title="Form Link Copied!">
+                        <i class="fa-solid fa-link" style="color: #000000;"></i>
+                    </button>
                     <input name="uniqueId" value="{{ $datas->first()->unique_id }}" hidden>
                     @foreach($datas as $key => $item)
                         <!-- Repeated code block for form elements -->
@@ -141,3 +152,20 @@
     </div>
 
 @endsection
+@push('js')
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip({trigger: 'manual', placement: 'top'});
+
+            var clipboard = new ClipboardJS('.copy-link');
+
+            clipboard.on('success', function(e) {
+                $(e.trigger).tooltip('show');
+                setTimeout(function() {
+                    $(e.trigger).tooltip('hide');
+                }, 1000);
+            });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+@endpush

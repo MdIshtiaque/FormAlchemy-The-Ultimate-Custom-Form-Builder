@@ -152,7 +152,9 @@
                     @endforeach
                     <button id="submitButton" class="btn btn-primary" type="submit" style="display:none;">Submit</button>
                 </form>
+                @if($items->first()->formData[0]->user_id == auth()->user()->id)
                     <button id="editButton" class="btn btn-warning">Edit Respond</button>
+                @endif
             </div>
         </div>
 
