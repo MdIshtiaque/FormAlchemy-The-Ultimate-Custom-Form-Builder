@@ -69,12 +69,12 @@
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">{{ $item->question }}</label>
                                 <input type="text" class="form-control" id="exampleFormControlInput1" name="value[{{ $item->id }}]"
-                                       placeholder="name@example.com">
+                                       placeholder="name@example.com" required>
                             </div>
                         @elseif($item->type === 'Long_Answer')
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">{{ $item->question }}</label>
-                                <textarea class="form-control" name="value[{{ $item->id }}]"></textarea>
+                                <textarea class="form-control" name="value[{{ $item->id }}]" required></textarea>
                             </div>
                         @elseif($item->type === 'Checkbox')
                             <div class="mb-3">
@@ -84,7 +84,7 @@
                                     @foreach ($options as $option)
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="value[{{ $item->id }}]"
-                                                   id="{{ $option }}" value="{{ $option }}">
+                                                   id="{{ $option }}" value="{{ $option }}" required>
                                             <label class="form-check-label" for="{{ $option }}">
                                                 {{ $option }}
                                             </label>
@@ -99,7 +99,7 @@
                                 @if (is_array($options))
                                     @foreach ($options as $option)
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox"  value="{{ $option }}" id="{{ $option }}" name="value[{{ $item->id }}][]">
+                                            <input class="form-check-input" type="checkbox"  value="{{ $option }}" id="{{ $option }}" name="value[{{ $item->id }}][]" required>
                                             <label class="form-check-label" for="{{ $option }}">
                                                 {{ $option }}
                                             </label>
@@ -112,7 +112,7 @@
                                 <label class="form-label">{{ $item->question }}</label>
                                 @php $options = json_decode($item->options); @endphp
                                 @if (is_array($options))
-                                    <select class="form-select" id="{{ $item->question }}" name="value[{{ $item->id }}]">
+                                    <select class="form-select" id="{{ $item->question }}" name="value[{{ $item->id }}]" required>
                                         <option value="" selected disabled>Select</option>
                                         @foreach ($options as $option)
                                             <option value="{{ $option }}">{{ $option }}</option>
@@ -123,12 +123,12 @@
                         @elseif($item->type === 'Time')
                             <div class="mb-3">
                                 <label for="{{ $item->id }}" class="form-label">{{ $item->question }}</label>
-                                <input type="time" class="form-control" id="{{ $item->id }}" name="value[{{ $item->id }}]">
+                                <input type="time" class="form-control" id="{{ $item->id }}" name="value[{{ $item->id }}]" required>
                             </div>
                         @elseif($item->type === 'Date')
                             <div class="mb-3">
                                 <label for="{{ $item->id }}" class="form-label">{{ $item->question }}</label>
-                                <input type="date" class="form-control" id="{{ $item->id }}" name="value[{{ $item->id }}]">
+                                <input type="date" class="form-control" id="{{ $item->id }}" name="value[{{ $item->id }}]" required>
                             </div>
                         @endif
                     @endforeach
